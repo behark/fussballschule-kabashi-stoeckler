@@ -282,7 +282,7 @@ export default function ContactPage() {
                     Buche einen kostenlosen Beratungstermin oder ein Probetraining:
                   </p>
                   <a
-                    href="https://cal.com"
+                    href="https://cal.com/kabashi-jwghfq/30min"
                     target="_blank"
                     rel="noopener noreferrer"
                     className="block rounded-lg bg-[#003399] p-4 text-center font-bold text-white transition-colors hover:bg-[#001a4d]"
