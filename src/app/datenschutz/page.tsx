@@ -30,7 +30,7 @@ export default function DatenschutzPage() {
                 Ertlstraße 16<br />
                 4560 Kirchdorf an der Krems<br />
                 E-Mail: jonas.stoeckler@gmx.at<br />
-                Telefon: 0699 117 984 10
+                Telefon: 0664 441 7977
               </p>
 
               <h3 className="mt-6 font-bold text-[#003399]">2. Erhebung und Speicherung personenbezogener Daten</h3>

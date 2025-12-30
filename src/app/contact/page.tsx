@@ -66,7 +66,7 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
             <a
-              href="https://wa.me/43699117984100?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
+              href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
               target="_blank"
               rel="noopener noreferrer"
               className="flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-transform hover:scale-105"
@@ -82,7 +82,7 @@ export default function ContactPage() {
               E-Mail senden
             </a>
             <a
-              href="tel:+43699117984100"
+              href="tel:+436644417977"
               className="flex items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold text-white transition-transform hover:scale-105"
             >
               <Phone className="h-5 w-5" />
@@ -290,7 +290,7 @@ export default function ContactPage() {
                     Termin online buchen →
                   </a>
                   <p className="mt-3 text-center text-sm text-gray-500">
-                    Oder ruf uns einfach an: 0699 117 984 10
+                    Oder ruf uns einfach an: 0664 441 7977
                   </p>
                 </CardContent>
               </Card>
@@ -318,7 +318,7 @@ export default function ContactPage() {
                     <div>
                       <p className="font-semibold">WhatsApp</p>
                       <a
-                        href="https://wa.me/43699117984100"
+                        href="https://wa.me/436644417977"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#25D366] hover:underline"
@@ -346,8 +346,8 @@ export default function ContactPage() {
                     </div>
                     <div>
                       <p className="font-semibold">Telefon</p>
-                      <a href="tel:+43699117984100" className="text-[#003399] hover:underline">
-                        0699 117 984 10
+                      <a href="tel:+436644417977" className="text-[#003399] hover:underline">
+                        +43 664 441 7977
                       </a>
                     </div>
                   </div>

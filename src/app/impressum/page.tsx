@@ -35,7 +35,7 @@ export default function ImpressumPage() {
               <h3 className="mt-6 font-bold text-[#003399]">Kontakt</h3>
               <p>
                 E-Mail: <a href="mailto:jonas.stoeckler@gmx.at" className="text-[#003399]">jonas.stoeckler@gmx.at</a><br />
-                Telefon: <a href="tel:069911798410" className="text-[#003399]">0699 117 984 10</a>
+                Telefon: <a href="tel:6644417977" className="text-[#003399]">0664 441 7977</a>
               </p>
 
               <h3 className="mt-6 font-bold text-[#003399]">Unternehmensgegenstand</h3>

@@ -43,9 +43,9 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center space-x-4 lg:flex">
-          <a href="tel:069911798410" className="flex items-center text-sm font-medium text-gray-600 hover:text-[#003399]">
+          <a href="tel:6644417977" className="flex items-center text-sm font-medium text-gray-600 hover:text-[#003399]">
             <Phone className="mr-1 h-4 w-4" />
-            0699 117 984 10
+            0664 441 7977
           </a>
           <Button asChild className="bg-[#22C55E] font-bold hover:bg-[#16a34a]">
             <Link href="/contact">Jetzt Anmelden</Link>
