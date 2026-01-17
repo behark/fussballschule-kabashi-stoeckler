@@ -62,13 +62,20 @@ export function Footer() {
           <div>
             <h3 className="mb-4 text-lg font-bold">Folge Uns</h3>
             <div className="flex space-x-4">
-              <a href="#" className="rounded-full bg-white/10 p-2 transition-colors hover:bg-[#22C55E]">
+              <a 
+                href="https://www.instagram.com/ks.fussballschule/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                aria-label="Folge uns auf Instagram"
+                className="rounded-full bg-white/10 p-2 transition-colors hover:bg-[#22C55E]"
+              >
                 <Instagram className="h-5 w-5" />
               </a>
               <a 
                 href="https://www.facebook.com/profile.php?id=61575646112694" 
                 target="_blank" 
                 rel="noopener noreferrer"
+                aria-label="Folge uns auf Facebook"
                 className="rounded-full bg-white/10 p-2 transition-colors hover:bg-[#22C55E]"
               >
                 <Facebook className="h-5 w-5" />

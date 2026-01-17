@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Users, CheckCircle2, ArrowRight, Star } from "lucide-react";
+import { campDates } from "@/lib/dates";
 
 export const metadata = {
   title: "Camps & Training | Kabashi-Stöckler Fussballschule",
@@ -69,7 +70,7 @@ export default function CampsPage() {
                         </div>
                         <div>
                           <p className="text-sm text-gray-500">Datum</p>
-                          <p className="text-xl font-bold text-[#003399]">27.-28. Oktober 2024</p>
+                          <p className="text-xl font-bold text-[#003399]">{campDates.october2024.formatted}</p>
                         </div>
                       </div>
                       

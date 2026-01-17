@@ -1,11 +1,34 @@
+"use client";
+
+import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, MapPin, Users, Trophy, Target, Zap, Heart, Star, ThumbsUp, MessageCircle, Facebook } from "lucide-react";
+import { ImageLightbox } from "@/components/ImageLightbox";
+import { getNextCamp } from "@/lib/dates";
 
 export default function Home() {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  const galleryImages = [
+    { src: "/images/camp-group.jpg", alt: "Fußballcamp Gruppentraining", title: "Teamtraining" },
+    { src: "/images/team-banner.jpg", alt: "Team mit KICKEN Banner", title: "Unsere Werte" },
+    { src: "/images/training-kids.jpg", alt: "Kinder beim Training", title: "Nachwuchsförderung" },
+    { src: "/images/partnership.jpg", alt: "Partnerschaft mit ASKÖ Kirchdorf", title: "Partnerschaft mit ASKÖ Kirchdorf" },
+    { src: "/images/trainer-team.jpg", alt: "Unser Trainerteam", title: "Unser Trainerteam" },
+  ];
+
+  const openLightbox = (index: number) => {
+    setLightboxIndex(index);
+    setLightboxOpen(true);
+  };
+
+  const nextCamp = getNextCamp();
+
   return (
     <>
       {/* Hero Section */}
@@ -49,7 +72,7 @@ export default function Home() {
           <div className="mt-16 grid w-full max-w-4xl grid-cols-1 gap-4 sm:grid-cols-3">
             <div className="rounded-xl bg-white/10 p-4 backdrop-blur">
               <Calendar className="mx-auto mb-2 h-8 w-8 text-[#22C55E]" />
-              <p className="font-bold">27.-28. Oktober</p>
+              <p className="font-bold">{nextCamp.formattedShort}</p>
               <p className="text-sm text-gray-300">Nächstes Bootcamp</p>
             </div>
             <div className="rounded-xl bg-white/10 p-4 backdrop-blur">
@@ -135,57 +158,50 @@ export default function Home() {
             EINDRÜCKE AUS UNSEREN CAMPS
           </h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            <div className="group relative h-[300px] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/camp-group.jpg"
-                alt="Fußballcamp Gruppentraining"
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <p className="absolute bottom-4 left-4 font-bold text-white">Teamtraining</p>
-            </div>
-            <div className="group relative h-[300px] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/team-banner.jpg"
-                alt="Team mit KICKEN Banner"
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <p className="absolute bottom-4 left-4 font-bold text-white">Unsere Werte</p>
-            </div>
-            <div className="group relative h-[300px] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/training-kids.jpg"
-                alt="Kinder beim Training"
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <p className="absolute bottom-4 left-4 font-bold text-white">Nachwuchsförderung</p>
-            </div>
-            <div className="group relative h-[300px] overflow-hidden rounded-2xl md:col-span-2">
-              <Image
-                src="/images/partnership.jpg"
-                alt="Partnerschaft mit ASKÖ Kirchdorf"
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <p className="absolute bottom-4 left-4 font-bold text-white">Partnerschaft mit ASKÖ Kirchdorf</p>
-            </div>
-            <div className="group relative h-[300px] overflow-hidden rounded-2xl">
-              <Image
-                src="/images/trainer-team.jpg"
-                alt="Unser Trainerteam"
-                fill
-                className="object-cover transition-transform duration-300 group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-              <p className="absolute bottom-4 left-4 font-bold text-white">Unser Trainerteam</p>
-            </div>
+            {galleryImages.map((image, index) => (
+              <button
+                key={index}
+                onClick={() => openLightbox(index)}
+                className={`group relative h-[300px] overflow-hidden rounded-2xl transition-transform hover:scale-[1.02] focus-visible:outline-2 focus-visible:outline-[#22C55E] focus-visible:outline-offset-2 ${
+                  index === 3 ? "md:col-span-2" : ""
+                }`}
+                aria-label={`${image.title} - Bild vergrößern`}
+              >
+                <Image
+                  src={image.src}
+                  alt={image.alt}
+                  fill
+                  className="object-cover transition-transform duration-300 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+                <p className="absolute bottom-4 left-4 font-bold text-white">{image.title}</p>
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity group-hover:opacity-100">
+                  <div className="rounded-full bg-white/20 p-3 backdrop-blur">
+                    <svg
+                      className="h-8 w-8 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0zM10 7v6m3-3H7"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </button>
+            ))}
           </div>
+          {lightboxOpen && (
+            <ImageLightbox
+              images={galleryImages}
+              initialIndex={lightboxIndex}
+              onClose={() => setLightboxOpen(false)}
+            />
+          )}
         </div>
       </section>
 
@@ -248,7 +264,7 @@ export default function Home() {
           <h2 className="mb-4 text-3xl font-black sm:text-4xl md:text-5xl">
             PERFORMANCE BOOTCAMP
           </h2>
-          <p className="mb-2 text-2xl font-bold text-[#22C55E]">27.-28. Oktober 2024</p>
+          <p className="mb-2 text-2xl font-bold text-[#22C55E]">{nextCamp.formatted}</p>
           <p className="mb-8 text-lg text-gray-300">
             Zwei Tage intensives Training am ASKÖ Kirchdorf Fußballplatz
           </p>

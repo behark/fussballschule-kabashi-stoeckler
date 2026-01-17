@@ -69,21 +69,24 @@ export default function ContactPage() {
               href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-transform hover:scale-105"
+              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              aria-label="WhatsApp schreiben"
             >
               <MessageCircle className="h-5 w-5" />
               WhatsApp schreiben
             </a>
             <a
               href="mailto:jonas.stoeckler@gmx.at?subject=Anfrage%20Fussballschule"
-              className="flex items-center gap-2 rounded-full bg-[#003399] px-6 py-3 font-bold text-white transition-transform hover:scale-105"
+              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#003399] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              aria-label="E-Mail senden"
             >
               <Mail className="h-5 w-5" />
               E-Mail senden
             </a>
             <a
               href="tel:+436644417977"
-              className="flex items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold text-white transition-transform hover:scale-105"
+              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+              aria-label="Jetzt anrufen"
             >
               <Phone className="h-5 w-5" />
               Jetzt anrufen
