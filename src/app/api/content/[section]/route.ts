@@ -4,9 +4,9 @@ import { defaults } from "@/lib/content";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { section: string } }
+  { params }: { params: Promise<{ section: string }> }
 ) {
-  const { section } = params;
+  const { section } = await params;
   const key = `content:${section}`;
 
   try {

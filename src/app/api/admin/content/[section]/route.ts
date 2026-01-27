@@ -4,7 +4,7 @@ import { getRedisData, setRedisData } from "@/lib/redis";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { section: string } }
+  { params }: { params: Promise<{ section: string }> }
 ) {
   // Verify authentication
   const token = getTokenFromCookie(request.headers.get("cookie"));
@@ -17,7 +17,7 @@ export async function GET(
     return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
   }
 
-  const { section } = params;
+  const { section } = await params;
   const key = `content:${section}`;
 
   try {
@@ -34,7 +34,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { section: string } }
+  { params }: { params: Promise<{ section: string }> }
 ) {
   // Verify authentication
   const token = getTokenFromCookie(request.headers.get("cookie"));
@@ -47,7 +47,7 @@ export async function PUT(
     return NextResponse.json({ error: "Nicht autorisiert" }, { status: 401 });
   }
 
-  const { section } = params;
+  const { section } = await params;
   const key = `content:${section}`;
 
   try {
