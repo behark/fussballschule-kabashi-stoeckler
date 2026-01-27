@@ -71,7 +71,35 @@ export async function getRedisData<T>(key: string): Promise<T | null> {
 // Helper to safely set data in Redis
 export async function setRedisData<T>(key: string, value: T): Promise<boolean> {
   try {
-    // Try standard Redis first
+    // Create backup before saving (store previous version)
+    const backupKey = `${key}:backup:${Date.now()}`;
+    const currentData = await getRedisData<T>(key);
+    
+    if (currentData !== null) {
+      // Save backup (keep last 5 backups)
+      try {
+        if (redisClient && redisUrl) {
+          await ensureConnection();
+          await redisClient.set(backupKey, JSON.stringify(currentData));
+          // Clean up old backups (keep only last 5)
+          const backupKeys = await redisClient.keys(`${key}:backup:*`);
+          if (backupKeys.length > 5) {
+            const sortedKeys = backupKeys.sort().reverse();
+            for (const oldKey of sortedKeys.slice(5)) {
+              await redisClient.del(oldKey);
+            }
+          }
+        } else if (upstashRedis && upstashUrl && upstashToken) {
+          await upstashRedis.set(backupKey, currentData);
+          // Note: Upstash doesn't support keys() easily, so we'll just set backups with timestamps
+        }
+      } catch (backupError) {
+        console.error("Error creating backup:", backupError);
+        // Continue with save even if backup fails
+      }
+    }
+
+    // Save new data
     if (redisClient && redisUrl) {
       await ensureConnection();
       await redisClient.set(key, JSON.stringify(value));
@@ -87,6 +115,46 @@ export async function setRedisData<T>(key: string, value: T): Promise<boolean> {
     return false;
   } catch (error) {
     console.error(`Error setting Redis key ${key}:`, error);
+    return false;
+  }
+}
+
+// Helper to get backup versions
+export async function getBackups(key: string): Promise<Array<{ timestamp: number; data: any }>> {
+  try {
+    if (redisClient && redisUrl) {
+      await ensureConnection();
+      const backupKeys = await redisClient.keys(`${key}:backup:*`);
+      const backups = [];
+      for (const backupKey of backupKeys) {
+        const timestamp = parseInt(backupKey.split(':').pop() || '0');
+        const data = await redisClient.get(backupKey);
+        if (data) {
+          backups.push({ timestamp, data: typeof data === 'string' ? JSON.parse(data) : data });
+        }
+      }
+      return backups.sort((a, b) => b.timestamp - a.timestamp); // Most recent first
+    }
+    return [];
+  } catch (error) {
+    console.error(`Error getting backups for ${key}:`, error);
+    return [];
+  }
+}
+
+// Helper to restore from backup
+export async function restoreFromBackup(key: string, timestamp: number): Promise<boolean> {
+  try {
+    const backupKey = `${key}:backup:${timestamp}`;
+    const backupData = await getRedisData(backupKey);
+    
+    if (backupData === null) {
+      return false;
+    }
+
+    return await setRedisData(key, backupData);
+  } catch (error) {
+    console.error(`Error restoring backup for ${key}:`, error);
     return false;
   }
 }

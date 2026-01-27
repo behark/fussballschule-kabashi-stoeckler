@@ -20,18 +20,68 @@ export function ImageUpload({ value, onChange, label = "Bild" }: ImageUploadProp
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
-    if (!file.type.startsWith("image/")) {
-      setError("Bitte wählen Sie eine Bilddatei aus");
+    // Validate file type more strictly
+    const allowedTypes = [
+      "image/jpeg",
+      "image/jpg",
+      "image/png",
+      "image/gif",
+      "image/webp",
+      "image/svg+xml",
+      "image/avif",
+    ];
+
+    if (!allowedTypes.includes(file.type) && !file.type.startsWith("image/")) {
+      setError("Nicht unterstütztes Format. Bitte verwenden Sie JPEG, PNG, GIF, WebP, AVIF oder SVG.");
       return;
     }
 
-    // Validate file size (max 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      setError("Die Datei ist zu groß (max. 5MB)");
+    // Validate file size (max 10MB)
+    const maxSize = 10 * 1024 * 1024; // 10MB
+    if (file.size > maxSize) {
+      setError(`Die Datei ist zu groß (max. ${Math.round(maxSize / 1024 / 1024)}MB)`);
       return;
     }
 
+    // Additional validation: check if file is actually an image by reading first bytes
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const arrayBuffer = e.target?.result as ArrayBuffer;
+      const bytes = new Uint8Array(arrayBuffer.slice(0, 4));
+      
+      // Check magic numbers for common image formats
+      const isValidImage = 
+        // JPEG: FF D8 FF
+        (bytes[0] === 0xFF && bytes[1] === 0xD8 && bytes[2] === 0xFF) ||
+        // PNG: 89 50 4E 47
+        (bytes[0] === 0x89 && bytes[1] === 0x50 && bytes[2] === 0x4E && bytes[3] === 0x47) ||
+        // GIF: 47 49 46 38
+        (bytes[0] === 0x47 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x38) ||
+        // WebP: RIFF...WEBP
+        (bytes[0] === 0x52 && bytes[1] === 0x49 && bytes[2] === 0x46 && bytes[3] === 0x46) ||
+        // SVG: starts with <
+        file.type === "image/svg+xml";
+      
+      if (!isValidImage && file.type !== "image/svg+xml") {
+        setError("Die Datei scheint kein gültiges Bild zu sein. Bitte überprüfen Sie die Datei.");
+        setUploading(false);
+        return;
+      }
+      
+      // Continue with upload
+      await performUpload(file);
+    };
+    
+    reader.onerror = () => {
+      setError("Fehler beim Lesen der Datei. Bitte versuchen Sie es erneut.");
+      setUploading(false);
+    };
+    
+    reader.readAsArrayBuffer(file);
+    return;
+  };
+
+  const performUpload = async (file: File) => {
     setUploading(true);
     setError(null);
 
@@ -45,13 +95,15 @@ export function ImageUpload({ value, onChange, label = "Bild" }: ImageUploadProp
       });
 
       if (!response.ok) {
-        throw new Error("Upload fehlgeschlagen");
+        const errorData = await response.json().catch(() => ({ error: "Upload fehlgeschlagen" }));
+        throw new Error(errorData.error || "Upload fehlgeschlagen");
       }
 
       const { url } = await response.json();
       onChange(url);
     } catch (err) {
-      setError("Fehler beim Hochladen. Bitte versuchen Sie es erneut.");
+      const errorMessage = err instanceof Error ? err.message : "Fehler beim Hochladen. Bitte versuchen Sie es erneut.";
+      setError(errorMessage);
       console.error("Upload error:", err);
     } finally {
       setUploading(false);
