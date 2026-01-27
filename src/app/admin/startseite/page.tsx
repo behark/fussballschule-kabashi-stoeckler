@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { SaveButton } from "@/components/admin/SaveButton";
 import { ImageUpload } from "@/components/admin/ImageUpload";
+import { BackupRestore } from "@/components/admin/BackupRestore";
 import type { HeroContent, MissionContent, SocialProofContent } from "@/lib/content";
 
 export default function StartseitePage() {
@@ -95,7 +96,11 @@ export default function StartseitePage() {
 
   return (
     <div className="space-y-8">
-      <h1 className="text-3xl font-black text-[#003399]">Startseite bearbeiten</h1>
+      <div className="flex items-center justify-between">
+        <h1 className="text-3xl font-black text-[#003399]">Startseite bearbeiten</h1>
+      </div>
+
+      <BackupRestore section="hero" />
 
       {/* Hero Section */}
       <Card>
