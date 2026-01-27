@@ -129,7 +129,6 @@ export default async function CampsPage() {
                       </div>
                     </>
                   )}
-                  </div>
                 </div>
               </CardContent>
             </Card>
