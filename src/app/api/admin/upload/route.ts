@@ -43,11 +43,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Validate file size (max 10MB for better quality images)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (max 4MB due to Vercel serverless function limit)
+    const maxSize = 4 * 1024 * 1024; // 4MB (Vercel limit is 4.5MB)
     if (file.size > maxSize) {
       return NextResponse.json(
-        { error: `Die Datei ist zu groß (max. ${Math.round(maxSize / 1024 / 1024)}MB)` },
+        { error: `Die Datei ist zu groß (max. ${Math.round(maxSize / 1024 / 1024)}MB). Bitte komprimieren Sie das Bild oder verwenden Sie ein kleineres Format.` },
         { status: 400 }
       );
     }
@@ -68,6 +68,26 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ url: blob.url });
   } catch (error) {
     console.error("Upload error:", error);
+    
+    // Handle specific error cases
+    if (error instanceof Error) {
+      // Check for size-related errors
+      if (error.message.includes("413") || error.message.includes("too large") || error.message.includes("PayloadTooLarge")) {
+        return NextResponse.json(
+          { error: "Die Datei ist zu groß (max. 4MB). Bitte komprimieren Sie das Bild." },
+          { status: 413 }
+        );
+      }
+      
+      // Check for blob storage errors
+      if (error.message.includes("blob") || error.message.includes("storage")) {
+        return NextResponse.json(
+          { error: "Fehler beim Speichern im Blob Storage. Bitte versuchen Sie es erneut." },
+          { status: 500 }
+        );
+      }
+    }
+    
     const errorMessage = error instanceof Error ? error.message : "Unbekannter Fehler";
     return NextResponse.json(
       { error: `Fehler beim Hochladen der Datei: ${errorMessage}` },

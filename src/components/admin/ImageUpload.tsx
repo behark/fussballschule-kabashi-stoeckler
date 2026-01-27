@@ -36,10 +36,10 @@ export function ImageUpload({ value, onChange, label = "Bild" }: ImageUploadProp
       return;
     }
 
-    // Validate file size (max 10MB)
-    const maxSize = 10 * 1024 * 1024; // 10MB
+    // Validate file size (max 4MB due to Vercel serverless function limit)
+    const maxSize = 4 * 1024 * 1024; // 4MB (Vercel limit is 4.5MB)
     if (file.size > maxSize) {
-      setError(`Die Datei ist zu groß (max. ${Math.round(maxSize / 1024 / 1024)}MB)`);
+      setError(`Die Datei ist zu groß (max. ${Math.round(maxSize / 1024 / 1024)}MB). Bitte komprimieren Sie das Bild oder verwenden Sie ein kleineres Format.`);
       return;
     }
 
@@ -96,6 +96,12 @@ export function ImageUpload({ value, onChange, label = "Bild" }: ImageUploadProp
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({ error: "Upload fehlgeschlagen" }));
+        
+        // Handle 413 (Payload Too Large) specifically
+        if (response.status === 413) {
+          throw new Error("Die Datei ist zu groß (max. 4MB). Bitte komprimieren Sie das Bild.");
+        }
+        
         throw new Error(errorData.error || "Upload fehlgeschlagen");
       }
 
