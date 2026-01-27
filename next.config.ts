@@ -8,6 +8,19 @@ const nextConfig: NextConfig = {
       bodySizeLimit: '4mb',
     },
   },
+  // Allow images from Vercel Blob Storage
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.public.blob.vercel-storage.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.blob.vercel-storage.com',
+      },
+    ],
+  },
 };
 
 export default nextConfig;
