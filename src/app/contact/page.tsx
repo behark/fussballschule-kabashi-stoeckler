@@ -1,15 +1,56 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Mail, Phone, Clock, Send, CheckCircle2, Loader2, MessageCircle, Calendar } from "lucide-react";
+import type { ContactContent, FAQContent } from "@/lib/content";
 
 export default function ContactPage() {
   const [formStatus, setFormStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
+  const [contact, setContact] = useState<ContactContent | null>(null);
+  const [faq, setFaq] = useState<FAQContent[]>([]);
+
+  useEffect(() => {
+    Promise.all([
+      fetch("/api/content/contact").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/faq").then(r => r.ok ? r.json() : null).then(d => d?.data),
+    ]).then(([contactData, faqData]) => {
+      setContact(contactData || {
+        phone: "+43 664 441 7977",
+        email: "jonas.stoeckler@gmx.at",
+        whatsapp: "https://wa.me/436644417977",
+        address: "Ertlstraße 16, 4560 Kirchdorf/Krems",
+        hours: "Mo-Fr: 09:00 - 18:00 Uhr",
+        bookingUrl: "https://cal.com/kabashi-jwghfq/30min",
+      });
+      setFaq(faqData || [
+        { question: "Wie erfolgt die Bezahlung?", answer: "Die Bezahlung erfolgt per Überweisung nach Bestätigung. Details erhalten Sie per E-Mail." },
+        { question: "Kann ich kurzfristig anmelden?", answer: "Ja, solange Plätze verfügbar sind nehmen wir gerne auch kurzfristige Anmeldungen an." },
+        { question: "Was bei schlechtem Wetter?", answer: "Das Training findet bei fast jedem Wetter statt. Bei extremen Bedingungen informieren wir Sie." },
+        { question: "Muss mein Kind im Verein sein?", answer: "Nein, unser Bootcamp ist für alle Kinder von 6-16 Jahren offen." },
+      ]);
+    }).catch(err => {
+      console.error("Error loading content:", err);
+      setContact({
+        phone: "+43 664 441 7977",
+        email: "jonas.stoeckler@gmx.at",
+        whatsapp: "https://wa.me/436644417977",
+        address: "Ertlstraße 16, 4560 Kirchdorf/Krems",
+        hours: "Mo-Fr: 09:00 - 18:00 Uhr",
+        bookingUrl: "https://cal.com/kabashi-jwghfq/30min",
+      });
+      setFaq([
+        { question: "Wie erfolgt die Bezahlung?", answer: "Die Bezahlung erfolgt per Überweisung nach Bestätigung. Details erhalten Sie per E-Mail." },
+        { question: "Kann ich kurzfristig anmelden?", answer: "Ja, solange Plätze verfügbar sind nehmen wir gerne auch kurzfristige Anmeldungen an." },
+        { question: "Was bei schlechtem Wetter?", answer: "Das Training findet bei fast jedem Wetter statt. Bei extremen Bedingungen informieren wir Sie." },
+        { question: "Muss mein Kind im Verein sein?", answer: "Nein, unser Bootcamp ist für alle Kinder von 6-16 Jahren offen." },
+      ]);
+    });
+  }, []);
   const [formData, setFormData] = useState({
     childName: "",
     childAge: "",
@@ -65,32 +106,36 @@ export default function ContactPage() {
       <section className="bg-gray-50 py-8">
         <div className="container mx-auto px-4">
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-              aria-label="WhatsApp schreiben"
-            >
-              <MessageCircle className="h-5 w-5" />
-              WhatsApp schreiben
-            </a>
-            <a
-              href="mailto:jonas.stoeckler@gmx.at?subject=Anfrage%20Fussballschule"
-              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#003399] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-              aria-label="E-Mail senden"
-            >
-              <Mail className="h-5 w-5" />
-              E-Mail senden
-            </a>
-            <a
-              href="tel:+436644417977"
-              className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
-              aria-label="Jetzt anrufen"
-            >
-              <Phone className="h-5 w-5" />
-              Jetzt anrufen
-            </a>
+            {contact && (
+              <>
+                <a
+                  href={`${contact.whatsapp}?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp.`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+                  aria-label="WhatsApp schreiben"
+                >
+                  <MessageCircle className="h-5 w-5" />
+                  WhatsApp schreiben
+                </a>
+                <a
+                  href={`mailto:${contact.email}?subject=Anfrage%20Fussballschule`}
+                  className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#003399] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+                  aria-label="E-Mail senden"
+                >
+                  <Mail className="h-5 w-5" />
+                  E-Mail senden
+                </a>
+                <a
+                  href={`tel:${contact.phone.replace(/\s/g, "")}`}
+                  className="flex min-h-[48px] items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold text-white transition-transform hover:scale-105 focus-visible:outline-2 focus-visible:outline-white focus-visible:outline-offset-2"
+                  aria-label="Jetzt anrufen"
+                >
+                  <Phone className="h-5 w-5" />
+                  Jetzt anrufen
+                </a>
+              </>
+            )}
           </div>
         </div>
       </section>
@@ -284,17 +329,21 @@ export default function ContactPage() {
                   <p className="mb-4 text-gray-600">
                     Buche einen kostenlosen Beratungstermin oder ein Probetraining:
                   </p>
-                  <a
-                    href="https://cal.com/kabashi-jwghfq/30min"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="block rounded-lg bg-[#003399] p-4 text-center font-bold text-white transition-colors hover:bg-[#001a4d]"
-                  >
-                    Termin online buchen →
-                  </a>
-                  <p className="mt-3 text-center text-sm text-gray-500">
-                    Oder ruf uns einfach an: 0664 441 7977
-                  </p>
+                  {contact && (
+                    <>
+                      <a
+                        href={contact.bookingUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="block rounded-lg bg-[#003399] p-4 text-center font-bold text-white transition-colors hover:bg-[#001a4d]"
+                      >
+                        Termin online buchen →
+                      </a>
+                      <p className="mt-3 text-center text-sm text-gray-500">
+                        Oder ruf uns einfach an: {contact.phone}
+                      </p>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -307,63 +356,70 @@ export default function ContactPage() {
                     <div className="rounded-full bg-[#003399] p-3">
                       <MapPin className="h-5 w-5 text-white" />
                     </div>
-                    <div>
-                      <p className="font-semibold">Trainingsort</p>
-                      <p className="text-gray-600">ASKÖ Kirchdorf Fußballplatz</p>
-                      <p className="text-gray-600">Ertlstraße 16, 4560 Kirchdorf/Krems</p>
-                    </div>
+                    {contact && (
+                      <>
+                        <div>
+                          <p className="font-semibold">Trainingsort</p>
+                          <p className="text-gray-600">{contact.address}</p>
+                        </div>
+                      </>
+                    )}
                   </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-[#25D366] p-3">
-                      <MessageCircle className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">WhatsApp</p>
-                      <a
-                        href="https://wa.me/436644417977"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[#25D366] hover:underline"
-                      >
-                        Direkt chatten →
-                      </a>
-                    </div>
-                  </div>
+                  {contact && (
+                    <>
+                      <div className="flex items-start gap-4">
+                        <div className="rounded-full bg-[#25D366] p-3">
+                          <MessageCircle className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">WhatsApp</p>
+                          <a
+                            href={contact.whatsapp}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-[#25D366] hover:underline"
+                          >
+                            Direkt chatten →
+                          </a>
+                        </div>
+                      </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-[#003399] p-3">
-                      <Mail className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">E-Mail</p>
-                      <a href="mailto:jonas.stoeckler@gmx.at" className="text-[#003399] hover:underline">
-                        jonas.stoeckler@gmx.at
-                      </a>
-                    </div>
-                  </div>
+                      <div className="flex items-start gap-4">
+                        <div className="rounded-full bg-[#003399] p-3">
+                          <Mail className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">E-Mail</p>
+                          <a href={`mailto:${contact.email}`} className="text-[#003399] hover:underline">
+                            {contact.email}
+                          </a>
+                        </div>
+                      </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-[#003399] p-3">
-                      <Phone className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">Telefon</p>
-                      <a href="tel:+436644417977" className="text-[#003399] hover:underline">
-                        +43 664 441 7977
-                      </a>
-                    </div>
-                  </div>
+                      <div className="flex items-start gap-4">
+                        <div className="rounded-full bg-[#003399] p-3">
+                          <Phone className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">Telefon</p>
+                          <a href={`tel:${contact.phone.replace(/\s/g, "")}`} className="text-[#003399] hover:underline">
+                            {contact.phone}
+                          </a>
+                        </div>
+                      </div>
 
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-full bg-[#003399] p-3">
-                      <Clock className="h-5 w-5 text-white" />
-                    </div>
-                    <div>
-                      <p className="font-semibold">Erreichbarkeit</p>
-                      <p className="text-gray-600">Mo-Fr: 09:00 - 18:00 Uhr</p>
-                    </div>
-                  </div>
+                      <div className="flex items-start gap-4">
+                        <div className="rounded-full bg-[#003399] p-3">
+                          <Clock className="h-5 w-5 text-white" />
+                        </div>
+                        <div>
+                          <p className="font-semibold">Erreichbarkeit</p>
+                          <p className="text-gray-600">{contact.hours}</p>
+                        </div>
+                      </div>
+                    </>
+                  )}
                 </CardContent>
               </Card>
 
@@ -400,16 +456,11 @@ export default function ContactPage() {
         <div className="container mx-auto px-4">
           <h2 className="mb-8 text-center text-3xl font-black text-[#003399]">HÄUFIGE FRAGEN</h2>
           <div className="mx-auto max-w-3xl space-y-4">
-            {[
-              { q: "Wie erfolgt die Bezahlung?", a: "Die Bezahlung erfolgt per Überweisung nach Bestätigung. Details erhalten Sie per E-Mail." },
-              { q: "Kann ich kurzfristig anmelden?", a: "Ja, solange Plätze verfügbar sind nehmen wir gerne auch kurzfristige Anmeldungen an." },
-              { q: "Was bei schlechtem Wetter?", a: "Das Training findet bei fast jedem Wetter statt. Bei extremen Bedingungen informieren wir Sie." },
-              { q: "Muss mein Kind im Verein sein?", a: "Nein, unser Bootcamp ist für alle Kinder von 6-16 Jahren offen." },
-            ].map((faq, i) => (
+            {faq.map((item, i) => (
               <Card key={i} className="border-0 shadow-md">
                 <CardContent className="p-6">
-                  <h3 className="mb-2 font-bold text-[#003399]">{faq.q}</h3>
-                  <p className="text-gray-600">{faq.a}</p>
+                  <h3 className="mb-2 font-bold text-[#003399]">{item.question}</h3>
+                  <p className="text-gray-600">{item.answer}</p>
                 </CardContent>
               </Card>
             ))}

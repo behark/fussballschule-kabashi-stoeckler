@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -9,18 +9,117 @@ import { Badge } from "@/components/ui/badge";
 import { ArrowRight, Calendar, MapPin, Users, Trophy, Target, Zap, Heart, Star, ThumbsUp, MessageCircle, Facebook } from "lucide-react";
 import { ImageLightbox } from "@/components/ImageLightbox";
 import { getNextCamp } from "@/lib/dates";
+import type { HeroContent, MissionContent, SocialProofContent, PillarContent, TestimonialContent, GalleryImage } from "@/lib/content";
+
+// Icon mapping
+const iconMap: Record<string, React.ComponentType<{ className?: string }>> = {
+  ThumbsUp,
+  MessageCircle,
+  Star,
+  Target,
+  Zap,
+  Trophy,
+  Heart,
+};
 
 export default function Home() {
   const [lightboxOpen, setLightboxOpen] = useState(false);
   const [lightboxIndex, setLightboxIndex] = useState(0);
+  const [hero, setHero] = useState<HeroContent | null>(null);
+  const [mission, setMission] = useState<MissionContent | null>(null);
+  const [socialProof, setSocialProof] = useState<SocialProofContent | null>(null);
+  const [pillars, setPillars] = useState<PillarContent[]>([]);
+  const [testimonials, setTestimonials] = useState<TestimonialContent[]>([]);
+  const [galleryImages, setGalleryImages] = useState<GalleryImage[]>([]);
 
-  const galleryImages = [
-    { src: "/images/camp-group.jpg", alt: "Fußballcamp Gruppentraining", title: "Teamtraining" },
-    { src: "/images/team-banner.jpg", alt: "Team mit KICKEN Banner", title: "Unsere Werte" },
-    { src: "/images/training-kids.jpg", alt: "Kinder beim Training", title: "Nachwuchsförderung" },
-    { src: "/images/partnership.jpg", alt: "Partnerschaft mit ASKÖ Kirchdorf", title: "Partnerschaft mit ASKÖ Kirchdorf" },
-    { src: "/images/trainer-team.jpg", alt: "Unser Trainerteam", title: "Unser Trainerteam" },
-  ];
+  useEffect(() => {
+    // Fetch content from public API (which uses Redis with fallback)
+    Promise.all([
+      fetch("/api/content/hero").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/mission").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/socialProof").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/pillars").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/testimonials").then(r => r.ok ? r.json() : null).then(d => d?.data),
+      fetch("/api/content/gallery").then(r => r.ok ? r.json() : null).then(d => d?.data),
+    ]).then(([heroData, missionData, socialData, pillarsData, testimonialsData, galleryData]) => {
+      // Use defaults if no data from Redis
+      setHero(heroData || {
+        badge: "🏆 Dein Fußball-Traum wird Realität! 🌟",
+        headline: "FÜR ALLE DIE\nBESSER WERDEN\nWOLLEN.",
+        subtext: "Die Kabashi-Stöckler Fussballschule bietet professionelles Training für junge Talente. Technik, Koordination und Power - alles was du brauchst, um dein Spiel auf das nächste Level zu bringen.",
+        image: "/images/trainer-team.jpg",
+      });
+      setMission(missionData || {
+        title: "UNSERE MISSION",
+        text: "Wir glauben daran, dass jedes Kind das Potenzial hat, ein großartiger Fußballer zu werden. Unsere Mission ist es, durch qualitativ hochwertiges Training und echte Fußball-Leidenschaft junge Talente zu fördern und zu inspirieren. Bei uns lernt ihr nicht nur Fußball - ihr entwickelt euch als Sportler und als Person.",
+      });
+      setSocialProof(socialData || {
+        stats: [
+          { value: "326+", label: "Facebook Follower", icon: "ThumbsUp" },
+          { value: "33+", label: "Aktive Community", icon: "MessageCircle" },
+          { value: "100%", label: "Zufriedenheit", icon: "Star" },
+        ],
+        facebookUrl: "https://www.facebook.com/profile.php?id=61575646112694",
+      });
+      setPillars(pillarsData || [
+        { icon: "Target", title: "TECHNIK", description: "Ballkontrolle, Dribbling und Passspiel auf höchstem Niveau" },
+        { icon: "Zap", title: "KOORDINATION", description: "Beweglichkeit, Balance und Körperbeherrschung verbessern" },
+        { icon: "Trophy", title: "POWER", description: "Kraft, Schnelligkeit und Ausdauer gezielt entwickeln" },
+        { icon: "Heart", title: "LEIDENSCHAFT", description: "Die Liebe zum Spiel steht bei uns an erster Stelle" },
+      ]);
+      setTestimonials(testimonialsData || [
+        { quote: "Mein Sohn hat in nur einem Camp so viel gelernt! Die Trainer sind super motiviert und gehen auf jedes Kind individuell ein.", author: "Maria S.", stars: 5 },
+        { quote: "Professionelles Training in familiärer Atmosphäre. Die Kinder haben Spaß und werden gleichzeitig gefordert. Top!", author: "Thomas K.", stars: 5 },
+        { quote: "Die beste Fußballschule in der Region! Meine Tochter freut sich jedes Mal auf das Training.", author: "Sandra H.", stars: 5 },
+      ]);
+      setGalleryImages(galleryData || [
+        { src: "/images/camp-group.jpg", alt: "Fußballcamp Gruppentraining", title: "Teamtraining" },
+        { src: "/images/team-banner.jpg", alt: "Team mit KICKEN Banner", title: "Unsere Werte" },
+        { src: "/images/training-kids.jpg", alt: "Kinder beim Training", title: "Nachwuchsförderung" },
+        { src: "/images/partnership.jpg", alt: "Partnerschaft mit ASKÖ Kirchdorf", title: "Partnerschaft mit ASKÖ Kirchdorf" },
+        { src: "/images/trainer-team.jpg", alt: "Unser Trainerteam", title: "Unser Trainerteam" },
+      ]);
+    }).catch(err => {
+      console.error("Error loading content:", err);
+      // Use defaults on error
+      setHero({
+        badge: "🏆 Dein Fußball-Traum wird Realität! 🌟",
+        headline: "FÜR ALLE DIE\nBESSER WERDEN\nWOLLEN.",
+        subtext: "Die Kabashi-Stöckler Fussballschule bietet professionelles Training für junge Talente. Technik, Koordination und Power - alles was du brauchst, um dein Spiel auf das nächste Level zu bringen.",
+        image: "/images/trainer-team.jpg",
+      });
+      setMission({
+        title: "UNSERE MISSION",
+        text: "Wir glauben daran, dass jedes Kind das Potenzial hat, ein großartiger Fußballer zu werden. Unsere Mission ist es, durch qualitativ hochwertiges Training und echte Fußball-Leidenschaft junge Talente zu fördern und zu inspirieren. Bei uns lernt ihr nicht nur Fußball - ihr entwickelt euch als Sportler und als Person.",
+      });
+      setSocialProof({
+        stats: [
+          { value: "326+", label: "Facebook Follower", icon: "ThumbsUp" },
+          { value: "33+", label: "Aktive Community", icon: "MessageCircle" },
+          { value: "100%", label: "Zufriedenheit", icon: "Star" },
+        ],
+        facebookUrl: "https://www.facebook.com/profile.php?id=61575646112694",
+      });
+      setPillars([
+        { icon: "Target", title: "TECHNIK", description: "Ballkontrolle, Dribbling und Passspiel auf höchstem Niveau" },
+        { icon: "Zap", title: "KOORDINATION", description: "Beweglichkeit, Balance und Körperbeherrschung verbessern" },
+        { icon: "Trophy", title: "POWER", description: "Kraft, Schnelligkeit und Ausdauer gezielt entwickeln" },
+        { icon: "Heart", title: "LEIDENSCHAFT", description: "Die Liebe zum Spiel steht bei uns an erster Stelle" },
+      ]);
+      setTestimonials([
+        { quote: "Mein Sohn hat in nur einem Camp so viel gelernt! Die Trainer sind super motiviert und gehen auf jedes Kind individuell ein.", author: "Maria S.", stars: 5 },
+        { quote: "Professionelles Training in familiärer Atmosphäre. Die Kinder haben Spaß und werden gleichzeitig gefordert. Top!", author: "Thomas K.", stars: 5 },
+        { quote: "Die beste Fußballschule in der Region! Meine Tochter freut sich jedes Mal auf das Training.", author: "Sandra H.", stars: 5 },
+      ]);
+      setGalleryImages([
+        { src: "/images/camp-group.jpg", alt: "Fußballcamp Gruppentraining", title: "Teamtraining" },
+        { src: "/images/team-banner.jpg", alt: "Team mit KICKEN Banner", title: "Unsere Werte" },
+        { src: "/images/training-kids.jpg", alt: "Kinder beim Training", title: "Nachwuchsförderung" },
+        { src: "/images/partnership.jpg", alt: "Partnerschaft mit ASKÖ Kirchdorf", title: "Partnerschaft mit ASKÖ Kirchdorf" },
+        { src: "/images/trainer-team.jpg", alt: "Unser Trainerteam", title: "Unser Trainerteam" },
+      ]);
+    });
+  }, []);
 
   const openLightbox = (index: number) => {
     setLightboxIndex(index);
@@ -32,30 +131,41 @@ export default function Home() {
   return (
     <>
       {/* Hero Section */}
-      <section className="relative min-h-[90vh] overflow-hidden">
-        <div className="absolute inset-0">
-          <Image
-            src="/images/trainer-team.jpg"
-            alt="Kabashi-Stöckler Trainer Team"
-            fill
-            className="object-cover"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-b from-[#003399]/80 via-[#003399]/70 to-[#001a4d]/90" />
-        </div>
-        <div className="container relative mx-auto flex min-h-[90vh] flex-col items-center justify-center px-4 py-20 text-center text-white">
-          <Badge className="mb-6 bg-[#22C55E] text-sm font-semibold hover:bg-[#22C55E]">
-            🏆 Dein Fußball-Traum wird Realität! 🌟
-          </Badge>
-          <h1 className="mb-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
-            FÜR ALLE DIE<br />
-            <span className="text-[#22C55E]">BESSER WERDEN</span><br />
-            WOLLEN.
-          </h1>
-          <p className="mb-8 max-w-2xl text-lg text-gray-300 sm:text-xl">
-            Die Kabashi-Stöckler Fussballschule bietet professionelles Training für junge Talente. 
-            Technik, Koordination und Power - alles was du brauchst, um dein Spiel auf das nächste Level zu bringen.
-          </p>
+      {hero && (
+        <section className="relative min-h-[90vh] overflow-hidden">
+          <div className="absolute inset-0">
+            <Image
+              src={hero.image}
+              alt="Kabashi-Stöckler Trainer Team"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#003399]/80 via-[#003399]/70 to-[#001a4d]/90" />
+          </div>
+          <div className="container relative mx-auto flex min-h-[90vh] flex-col items-center justify-center px-4 py-20 text-center text-white">
+            <Badge className="mb-6 bg-[#22C55E] text-sm font-semibold hover:bg-[#22C55E]">
+              {hero.badge}
+            </Badge>
+            <h1 className="mb-6 text-4xl font-black leading-tight tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+              {hero.headline.split("\\n").map((line, i) => (
+                <span key={i}>
+                  {line.includes("BESSER WERDEN") ? (
+                    <>
+                      {line.split("BESSER WERDEN")[0]}
+                      <span className="text-[#22C55E]">BESSER WERDEN</span>
+                      {line.split("BESSER WERDEN")[1]}
+                    </>
+                  ) : (
+                    line
+                  )}
+                  {i < hero.headline.split("\\n").length - 1 && <br />}
+                </span>
+              ))}
+            </h1>
+            <p className="mb-8 max-w-2xl text-lg text-gray-300 sm:text-xl">
+              {hero.subtext}
+            </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button asChild size="lg" className="bg-[#22C55E] px-8 text-lg font-bold hover:bg-[#16a34a]">
               <Link href="/contact">
@@ -86,79 +196,73 @@ export default function Home() {
               <p className="text-sm text-gray-300">ASKÖ Fußballplatz</p>
             </div>
           </div>
-        </div>
-        
-        {/* Scroll indicator */}
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
-          <div className="flex h-8 w-5 justify-center rounded-full border-2 border-white/50">
-            <div className="mt-2 h-2 w-1 animate-bounce rounded-full bg-white" />
+          
+          {/* Scroll indicator */}
+          <div className="absolute bottom-8 left-1/2 -translate-x-1/2">
+            <div className="flex h-8 w-5 justify-center rounded-full border-2 border-white/50">
+              <div className="mt-2 h-2 w-1 animate-bounce rounded-full bg-white" />
+            </div>
           </div>
         </div>
       </section>
+      )}
 
       {/* Social Proof Section */}
-      <section className="bg-[#003399] py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-wrap items-center justify-center gap-8 text-white md:gap-16">
-            <div className="flex items-center gap-3">
-              <ThumbsUp className="h-8 w-8 text-[#22C55E]" />
-              <div>
-                <p className="text-3xl font-black">326+</p>
-                <p className="text-sm text-gray-300">Facebook Follower</p>
-              </div>
+      {socialProof && (
+        <section className="bg-[#003399] py-12">
+          <div className="container mx-auto px-4">
+            <div className="flex flex-wrap items-center justify-center gap-8 text-white md:gap-16">
+              {socialProof.stats.map((stat, index) => {
+                const Icon = iconMap[stat.icon] || Star;
+                return (
+                  <div key={index} className="flex items-center gap-3">
+                    <Icon className="h-8 w-8 text-[#22C55E]" />
+                    <div>
+                      <p className="text-3xl font-black">{stat.value}</p>
+                      <p className="text-sm text-gray-300">{stat.label}</p>
+                    </div>
+                  </div>
+                );
+              })}
+              <a
+                href={socialProof.facebookUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold transition-colors hover:bg-[#16a34a]"
+              >
+                <Facebook className="h-5 w-5" />
+                Folge uns auf Facebook
+              </a>
             </div>
-            <div className="flex items-center gap-3">
-              <MessageCircle className="h-8 w-8 text-[#22C55E]" />
-              <div>
-                <p className="text-3xl font-black">33+</p>
-                <p className="text-sm text-gray-300">Aktive Community</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-3">
-              <Star className="h-8 w-8 text-[#22C55E]" />
-              <div>
-                <p className="text-3xl font-black">100%</p>
-                <p className="text-sm text-gray-300">Zufriedenheit</p>
-              </div>
-            </div>
-            <a
-              href="https://www.facebook.com/profile.php?id=61575646112694"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 rounded-full bg-[#22C55E] px-6 py-3 font-bold transition-colors hover:bg-[#16a34a]"
-            >
-              <Facebook className="h-5 w-5" />
-              Folge uns auf Facebook
-            </a>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Mission Statement */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <div className="mx-auto max-w-3xl text-center">
-            <h2 className="mb-6 text-3xl font-black text-[#003399] sm:text-4xl">
-              UNSERE MISSION
-            </h2>
-            <p className="text-lg leading-relaxed text-gray-700">
-              Wir glauben daran, dass jedes Kind das Potenzial hat, ein großartiger Fußballer zu werden. 
-              Unsere Mission ist es, durch qualitativ hochwertiges Training und echte Fußball-Leidenschaft 
-              junge Talente zu fördern und zu inspirieren. Bei uns lernt ihr nicht nur Fußball - 
-              ihr entwickelt euch als Sportler und als Person.
-            </p>
+      {mission && (
+        <section className="bg-gray-50 py-20">
+          <div className="container mx-auto px-4">
+            <div className="mx-auto max-w-3xl text-center">
+              <h2 className="mb-6 text-3xl font-black text-[#003399] sm:text-4xl">
+                {mission.title}
+              </h2>
+              <p className="text-lg leading-relaxed text-gray-700">
+                {mission.text}
+              </p>
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Photo Gallery */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
-            EINDRÜCKE AUS UNSEREN CAMPS
-          </h2>
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {galleryImages.map((image, index) => (
+      {galleryImages.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
+              EINDRÜCKE AUS UNSEREN CAMPS
+            </h2>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+              {galleryImages.map((image, index) => (
               <button
                 key={index}
                 onClick={() => openLightbox(index)}
@@ -193,67 +297,61 @@ export default function Home() {
                   </div>
                 </div>
               </button>
-            ))}
+              ))}
+            </div>
+            {lightboxOpen && (
+              <ImageLightbox
+                images={galleryImages}
+                initialIndex={lightboxIndex}
+                onClose={() => setLightboxOpen(false)}
+              />
+            )}
           </div>
-          {lightboxOpen && (
-            <ImageLightbox
-              images={galleryImages}
-              initialIndex={lightboxIndex}
-              onClose={() => setLightboxOpen(false)}
-            />
-          )}
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Core Pillars */}
-      <section className="py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
-            DIE 4 SÄULEN UNSERES TRAININGS
-          </h2>
-          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
-            <Card className="group border-0 bg-gradient-to-br from-[#003399] to-[#001a4d] text-white transition-transform hover:scale-105">
-              <CardContent className="flex flex-col items-center p-8 text-center">
-                <Target className="mb-4 h-12 w-12 text-[#22C55E]" />
-                <h3 className="mb-2 text-xl font-bold">TECHNIK</h3>
-                <p className="text-sm text-gray-300">
-                  Ballkontrolle, Dribbling und Passspiel auf höchstem Niveau
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group border-0 bg-gradient-to-br from-[#003399] to-[#001a4d] text-white transition-transform hover:scale-105">
-              <CardContent className="flex flex-col items-center p-8 text-center">
-                <Zap className="mb-4 h-12 w-12 text-[#22C55E]" />
-                <h3 className="mb-2 text-xl font-bold">KOORDINATION</h3>
-                <p className="text-sm text-gray-300">
-                  Beweglichkeit, Balance und Körperbeherrschung verbessern
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group border-0 bg-gradient-to-br from-[#003399] to-[#001a4d] text-white transition-transform hover:scale-105">
-              <CardContent className="flex flex-col items-center p-8 text-center">
-                <Trophy className="mb-4 h-12 w-12 text-[#22C55E]" />
-                <h3 className="mb-2 text-xl font-bold">POWER</h3>
-                <p className="text-sm text-gray-300">
-                  Kraft, Schnelligkeit und Ausdauer gezielt entwickeln
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="group border-0 bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-white transition-transform hover:scale-105">
-              <CardContent className="flex flex-col items-center p-8 text-center">
-                <Heart className="mb-4 h-12 w-12 text-white" />
-                <h3 className="mb-2 text-xl font-bold">LEIDENSCHAFT</h3>
-                <p className="text-sm text-gray-100">
-                  Die Liebe zum Spiel steht bei uns an erster Stelle
-                </p>
-              </CardContent>
-            </Card>
+      {pillars.length > 0 && (
+        <section className="py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
+              DIE 4 SÄULEN UNSERES TRAININGS
+            </h2>
+            <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
+              {pillars.map((pillar, index) => {
+                const Icon = iconMap[pillar.icon] || Target;
+                const isLast = index === pillars.length - 1;
+                return (
+                  <Card
+                    key={index}
+                    className={`group border-0 ${
+                      isLast
+                        ? "bg-gradient-to-br from-[#22C55E] to-[#16a34a] text-white"
+                        : "bg-gradient-to-br from-[#003399] to-[#001a4d] text-white"
+                    } transition-transform hover:scale-105`}
+                  >
+                    <CardContent className="flex flex-col items-center p-8 text-center">
+                      <Icon
+                        className={`mb-4 h-12 w-12 ${
+                          isLast ? "text-white" : "text-[#22C55E]"
+                        }`}
+                      />
+                      <h3 className="mb-2 text-xl font-bold">{pillar.title}</h3>
+                      <p
+                        className={`text-sm ${
+                          isLast ? "text-gray-100" : "text-gray-300"
+                        }`}
+                      >
+                        {pillar.description}
+                      </p>
+                    </CardContent>
+                  </Card>
+                );
+              })}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Next Bootcamp CTA */}
       <section className="bg-[#003399] py-20">
@@ -292,54 +390,32 @@ export default function Home() {
       </section>
 
       {/* Testimonials Section */}
-      <section className="bg-gray-50 py-20">
-        <div className="container mx-auto px-4">
-          <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
-            WAS ELTERN SAGEN
-          </h2>
-          <div className="grid gap-6 md:grid-cols-3">
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="mb-4 flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                  ))}
-                </div>
-                <p className="mb-4 text-gray-600">
-                  &ldquo;Mein Sohn hat in nur einem Camp so viel gelernt! Die Trainer sind super motiviert und gehen auf jedes Kind individuell ein.&rdquo;
-                </p>
-                <p className="font-bold text-[#003399]">- Maria S.</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="mb-4 flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                  ))}
-                </div>
-                <p className="mb-4 text-gray-600">
-                  &ldquo;Professionelles Training in familiärer Atmosphäre. Die Kinder haben Spaß und werden gleichzeitig gefordert. Top!&rdquo;
-                </p>
-                <p className="font-bold text-[#003399]">- Thomas K.</p>
-              </CardContent>
-            </Card>
-            <Card className="border-0 shadow-lg">
-              <CardContent className="p-6">
-                <div className="mb-4 flex text-yellow-400">
-                  {[...Array(5)].map((_, i) => (
-                    <Star key={i} className="h-5 w-5 fill-current" />
-                  ))}
-                </div>
-                <p className="mb-4 text-gray-600">
-                  &ldquo;Die beste Fußballschule in der Region! Meine Tochter freut sich jedes Mal auf das Training.&rdquo;
-                </p>
-                <p className="font-bold text-[#003399]">- Sandra H.</p>
-              </CardContent>
-            </Card>
+      {testimonials.length > 0 && (
+        <section className="bg-gray-50 py-20">
+          <div className="container mx-auto px-4">
+            <h2 className="mb-12 text-center text-3xl font-black text-[#003399] sm:text-4xl">
+              WAS ELTERN SAGEN
+            </h2>
+            <div className="grid gap-6 md:grid-cols-3">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="border-0 shadow-lg">
+                  <CardContent className="p-6">
+                    <div className="mb-4 flex text-yellow-400">
+                      {[...Array(testimonial.stars || 5)].map((_, i) => (
+                        <Star key={i} className="h-5 w-5 fill-current" />
+                      ))}
+                    </div>
+                    <p className="mb-4 text-gray-600">
+                      &ldquo;{testimonial.quote}&rdquo;
+                    </p>
+                    <p className="font-bold text-[#003399]">- {testimonial.author}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Facebook Feed Section */}
       <section className="py-20">

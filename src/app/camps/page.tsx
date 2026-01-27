@@ -5,13 +5,16 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Calendar, Clock, MapPin, Users, CheckCircle2, ArrowRight, Star } from "lucide-react";
 import { campDates } from "@/lib/dates";
+import { getCampsContent } from "@/lib/content";
 
 export const metadata = {
   title: "Camps & Training | Kabashi-Stöckler Fussballschule",
   description: "Performance Bootcamp am 27.-28. Oktober in Kirchdorf. Professionelles Fußballtraining für Kinder von 6-16 Jahren. Jetzt anmelden!",
 };
 
-export default function CampsPage() {
+export default async function CampsPage() {
+  const camps = await getCampsContent();
+  const mainCamp = camps[0] || null;
   return (
     <>
       {/* Hero with Background Image */}
@@ -58,69 +61,74 @@ export default function CampsPage() {
                 {/* Main Info Grid */}
                 <div className="grid lg:grid-cols-2">
                   {/* Left - Event Details */}
-                  <div className="border-b p-8 lg:border-b-0 lg:border-r">
-                    <h2 className="mb-6 text-3xl font-black text-[#003399]">
-                      OKTOBER BOOTCAMP
-                    </h2>
-                    
-                    <div className="space-y-4">
-                      <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
-                        <div className="rounded-full bg-[#003399] p-3">
-                          <Calendar className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Datum</p>
-                          <p className="text-xl font-bold text-[#003399]">{campDates.october2024.formatted}</p>
+                  {mainCamp && (
+                    <>
+                      <div className="border-b p-8 lg:border-b-0 lg:border-r">
+                        <h2 className="mb-6 text-3xl font-black text-[#003399]">
+                          {mainCamp.name}
+                        </h2>
+                        
+                        <div className="space-y-4">
+                          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+                            <div className="rounded-full bg-[#003399] p-3">
+                              <Calendar className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Datum</p>
+                              <p className="text-xl font-bold text-[#003399]">{mainCamp.formattedDates}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+                            <div className="rounded-full bg-[#003399] p-3">
+                              <Clock className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Trainingszeit</p>
+                              <p className="text-xl font-bold text-[#003399]">{mainCamp.time}</p>
+                            </div>
+                          </div>
+                          
+                          <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
+                            <div className="rounded-full bg-[#003399] p-3">
+                              <MapPin className="h-6 w-6 text-white" />
+                            </div>
+                            <div>
+                              <p className="text-sm text-gray-500">Ort</p>
+                              <p className="font-bold text-[#003399]">{mainCamp.location}</p>
+                              <p className="text-sm text-gray-600">{mainCamp.address}</p>
+                            </div>
+                          </div>
                         </div>
                       </div>
-                      
-                      <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
-                        <div className="rounded-full bg-[#003399] p-3">
-                          <Clock className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Trainingszeit</p>
-                          <p className="text-xl font-bold text-[#003399]">09:00 - 12:00 Uhr</p>
-                        </div>
-                      </div>
-                      
-                      <div className="flex items-center gap-4 rounded-lg bg-gray-50 p-4">
-                        <div className="rounded-full bg-[#003399] p-3">
-                          <MapPin className="h-6 w-6 text-white" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500">Ort</p>
-                          <p className="font-bold text-[#003399]">ASKÖ Kirchdorf Fußballplatz</p>
-                          <p className="text-sm text-gray-600">Ertlstraße 16, 4560 Kirchdorf/Krems</p>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
 
-                  {/* Right - Pricing & Registration */}
-                  <div className="flex flex-col justify-between bg-gray-50 p-8">
-                    <div>
-                      <div className="mb-6 text-center">
-                        <p className="text-sm text-gray-500">Teilnahmegebühr</p>
-                        <p className="text-5xl font-black text-[#22C55E]">€50</p>
-                        <p className="text-sm text-gray-500">für beide Tage</p>
-                      </div>
-                      
-                      <div className="mb-6 flex items-center justify-center gap-4 rounded-lg bg-white p-4">
-                        <Users className="h-8 w-8 text-[#003399]" />
-                        <div className="text-center">
-                          <p className="text-sm text-gray-500">Altersgruppe</p>
-                          <p className="text-2xl font-bold text-[#003399]">6-16 Jahre</p>
+                      {/* Right - Pricing & Registration */}
+                      <div className="flex flex-col justify-between bg-gray-50 p-8">
+                        <div>
+                          <div className="mb-6 text-center">
+                            <p className="text-sm text-gray-500">Teilnahmegebühr</p>
+                            <p className="text-5xl font-black text-[#22C55E]">{mainCamp.price}</p>
+                            <p className="text-sm text-gray-500">für beide Tage</p>
+                          </div>
+                          
+                          <div className="mb-6 flex items-center justify-center gap-4 rounded-lg bg-white p-4">
+                            <Users className="h-8 w-8 text-[#003399]" />
+                            <div className="text-center">
+                              <p className="text-sm text-gray-500">Altersgruppe</p>
+                              <p className="text-2xl font-bold text-[#003399]">{mainCamp.ageGroup}</p>
+                            </div>
+                          </div>
                         </div>
+                        
+                        <Button asChild size="lg" className="w-full bg-[#22C55E] text-lg font-bold hover:bg-[#16a34a]">
+                          <Link href="/contact">
+                            Jetzt Anmelden
+                            <ArrowRight className="ml-2 h-5 w-5" />
+                          </Link>
+                        </Button>
                       </div>
-                    </div>
-                    
-                    <Button asChild size="lg" className="w-full bg-[#22C55E] text-lg font-bold hover:bg-[#16a34a]">
-                      <Link href="/contact">
-                        Jetzt Anmelden
-                        <ArrowRight className="ml-2 h-5 w-5" />
-                      </Link>
-                    </Button>
+                    </>
+                  )}
                   </div>
                 </div>
               </CardContent>
@@ -251,16 +259,7 @@ export default function CampsPage() {
           <h2 className="mb-8 text-center text-3xl font-black text-[#003399]">WAS IST INKLUDIERT?</h2>
           
           <div className="mx-auto grid max-w-4xl gap-4 md:grid-cols-2">
-            {[
-              "Professionelles Training durch qualifizierte Trainer",
-              "Individuelle Betreuung in kleinen Gruppen",
-              "Altersgerechte Trainingseinheiten",
-              "Koordinations- und Technikübungen",
-              "Spielformen und Mini-Turniere",
-              "Getränke während des Trainings",
-              "Urkunde und kleines Geschenk",
-              "Versicherung während des Camps",
-            ].map((item, index) => (
+            {mainCamp?.included.map((item, index) => (
               <div key={index} className="flex items-center gap-3 rounded-lg bg-gray-50 p-4">
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-[#22C55E]" />
                 <span className="font-medium">{item}</span>
@@ -276,14 +275,7 @@ export default function CampsPage() {
           <h2 className="mb-8 text-center text-3xl font-black">WAS MITBRINGEN?</h2>
           
           <div className="mx-auto grid max-w-3xl gap-4 sm:grid-cols-2 md:grid-cols-3">
-            {[
-              "Fußballschuhe (Nocken/Stollen)",
-              "Schienbeinschoner",
-              "Sportkleidung",
-              "Trinkflasche",
-              "Kleine Jause",
-              "Gute Laune!",
-            ].map((item, index) => (
+            {mainCamp?.bring.map((item, index) => (
               <div key={index} className="flex items-center gap-2 rounded-lg bg-white/10 p-4">
                 <CheckCircle2 className="h-5 w-5 text-[#22C55E]" />
                 <span>{item}</span>
