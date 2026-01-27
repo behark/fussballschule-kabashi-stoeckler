@@ -28,7 +28,15 @@ export async function signToken(username: string): Promise<string> {
 export async function verifyToken(token: string): Promise<AdminPayload | null> {
   try {
     const { payload } = await jwtVerify(token, secret);
-    return payload as AdminPayload;
+    // Type guard to ensure payload has required fields
+    if (payload && typeof payload === 'object' && 'username' in payload) {
+      return {
+        username: payload.username as string,
+        iat: payload.iat as number,
+        exp: payload.exp as number,
+      };
+    }
+    return null;
   } catch (error) {
     return null;
   }
