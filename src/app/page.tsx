@@ -168,13 +168,13 @@ export default function Home() {
             </p>
           <div className="flex flex-col gap-4 sm:flex-row">
             <Button asChild size="lg" className="bg-[#22C55E] px-8 text-lg font-bold hover:bg-[#16a34a]">
-              <Link href="/contact">
-                Jetzt Anmelden
+              <Link href="/camps">
+                Camps entdecken
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="border-white bg-transparent px-8 text-lg font-bold text-white hover:bg-white/10">
-              <Link href="/camps">Camps entdecken</Link>
+              <Link href="/about">Über Uns</Link>
             </Button>
           </div>
           
@@ -381,8 +381,8 @@ export default function Home() {
             </div>
           </div>
           <Button asChild size="lg" className="bg-[#22C55E] px-10 text-lg font-bold hover:bg-[#16a34a]">
-            <Link href="/contact">
-              Platz Sichern
+            <Link href="/camps">
+              Mehr erfahren
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

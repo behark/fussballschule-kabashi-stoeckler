@@ -3,13 +3,13 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Calendar, Clock, MapPin, Users, CheckCircle2, ArrowRight, Star } from "lucide-react";
+import { Calendar, Clock, MapPin, Users, CheckCircle2, ArrowRight, Star, MessageCircle } from "lucide-react";
 import { campDates } from "@/lib/dates";
 import { getCampsContent } from "@/lib/content";
 
 export const metadata = {
   title: "Camps & Training | Kabashi-Stöckler Fussballschule",
-  description: "Performance Bootcamp am 27.-28. Oktober in Kirchdorf. Professionelles Fußballtraining für Kinder von 6-16 Jahren. Jetzt anmelden!",
+  description: "Performance Bootcamp in Kirchdorf. Professionelles Fußballtraining für Kinder von 6-16 Jahren.",
 };
 
 export default async function CampsPage() {
@@ -53,7 +53,7 @@ export default async function CampsPage() {
                     <Star className="h-6 w-6 text-[#22C55E]" />
                     <span className="text-sm font-semibold uppercase tracking-wider">Nächstes Event</span>
                   </div>
-                  <Badge className="bg-[#22C55E] font-bold">Anmeldung offen</Badge>
+                  <Badge className="bg-[#22C55E] font-bold">Nächstes Camp</Badge>
                 </div>
               </div>
               
@@ -120,12 +120,15 @@ export default async function CampsPage() {
                           </div>
                         </div>
                         
-                        <Button asChild size="lg" className="w-full bg-[#22C55E] text-lg font-bold hover:bg-[#16a34a]">
-                          <Link href="/contact">
-                            Jetzt Anmelden
-                            <ArrowRight className="ml-2 h-5 w-5" />
-                          </Link>
-                        </Button>
+                        <a
+                          href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 text-lg font-bold text-white transition-colors hover:bg-[#1fb855]"
+                        >
+                          <MessageCircle className="h-5 w-5" />
+                          Bei Interesse melden
+                        </a>
                       </div>
                     </>
                   )}
@@ -154,12 +157,15 @@ export default async function CampsPage() {
               <p className="mb-4 text-gray-600">
                 4 Tage intensives Training mit Mittagessen, Obst & Getränke inklusive!
               </p>
-              <Button asChild size="lg" className="bg-[#003399] font-bold hover:bg-[#001a4d]">
-                <Link href="/contact">
-                  Jetzt Vormerken
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
+              <a
+                href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Sommer%20Camp%202025."
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 font-bold text-white transition-colors hover:bg-[#1fb855]"
+              >
+                <MessageCircle className="h-5 w-5" />
+                Bei Interesse melden
+              </a>
             </div>
           </div>
         </div>
@@ -289,14 +295,17 @@ export default async function CampsPage() {
         <div className="container mx-auto px-4 text-center">
           <h2 className="mb-4 text-3xl font-black text-[#003399]">BEREIT DURCHZUSTARTEN?</h2>
           <p className="mb-8 text-lg text-gray-600">
-            Sichere dir jetzt deinen Platz beim Performance Bootcamp!
+            Hast du Fragen? Kontaktiere uns direkt per WhatsApp!
           </p>
-          <Button asChild size="lg" className="bg-[#22C55E] px-10 text-lg font-bold hover:bg-[#16a34a]">
-            <Link href="/contact">
-              Zur Anmeldung
-              <ArrowRight className="ml-2 h-5 w-5" />
-            </Link>
-          </Button>
+          <a
+            href="https://wa.me/436644417977?text=Hallo!%20Ich%20interessiere%20mich%20für%20das%20Fußballcamp."
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-10 py-3 text-lg font-bold text-white transition-colors hover:bg-[#1fb855]"
+          >
+            <MessageCircle className="h-5 w-5" />
+            WhatsApp schreiben
+          </a>
         </div>
       </section>
     </>

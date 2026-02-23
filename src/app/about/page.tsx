@@ -155,11 +155,11 @@ export default async function AboutPage() {
         <div className="container mx-auto px-4 text-center text-white">
           <h2 className="mb-4 text-3xl font-black">WERDE TEIL UNSERES TEAMS!</h2>
           <p className="mb-8 text-lg text-gray-300">
-            Melde dich jetzt für unser nächstes Bootcamp an.
+            Erfahre mehr über unsere Camps und Trainingsangebote.
           </p>
           <Button asChild size="lg" className="bg-[#22C55E] px-10 text-lg font-bold hover:bg-[#16a34a]">
-            <Link href="/contact">
-              Jetzt Anmelden
+            <Link href="/camps">
+              Camps entdecken
               <ArrowRight className="ml-2 h-5 w-5" />
             </Link>
           </Button>

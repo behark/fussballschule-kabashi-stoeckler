@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { MapPin, Mail, Phone, Instagram, Facebook } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
 
@@ -9,9 +10,13 @@ export function Footer() {
         <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-4">
           <div>
             <div className="flex items-center space-x-2">
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white">
-                <span className="text-xl font-black text-[#003399]">KS</span>
-              </div>
+              <Image
+                src="/images/logo-ks.svg"
+                alt="Kabashi-Stöckler Logo"
+                width={40}
+                height={40}
+                className="h-10 w-10"
+              />
               <div>
                 <span className="text-lg font-black">KABASHI-STÖCKLER</span>
                 <span className="block text-xs font-semibold text-gray-300">FUSSBALLSCHULE</span>

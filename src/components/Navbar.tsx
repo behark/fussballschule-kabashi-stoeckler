@@ -1,9 +1,10 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Button } from "@/components/ui/button";
 import { Menu, Phone } from "lucide-react";
 
 const navLinks = [
@@ -21,9 +22,13 @@ export function Navbar() {
     <header className="sticky top-0 z-50 w-full border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
       <div className="container mx-auto flex h-16 items-center justify-between px-4">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#003399]">
-            <span className="text-xl font-black text-white">KS</span>
-          </div>
+          <Image
+            src="/images/logo-ks.svg"
+            alt="Kabashi-Stöckler Logo"
+            width={40}
+            height={40}
+            className="h-10 w-10"
+          />
           <div className="hidden sm:block">
             <span className="text-lg font-black text-[#003399]">KABASHI-STÖCKLER</span>
             <span className="block text-xs font-semibold text-gray-600">FUSSBALLSCHULE</span>
@@ -43,17 +48,14 @@ export function Navbar() {
         </nav>
 
         <div className="hidden items-center space-x-4 lg:flex">
-          <a 
-            href="tel:+436644417977" 
+          <a
+            href="tel:+436644417977"
             aria-label="Rufe uns an: 0664 441 7977"
             className="flex items-center text-sm font-medium text-gray-600 hover:text-[#003399] focus-visible:outline-2 focus-visible:outline-[#22C55E] focus-visible:outline-offset-2 rounded"
           >
             <Phone className="mr-1 h-4 w-4" aria-hidden="true" />
             0664 441 7977
           </a>
-          <Button asChild className="bg-[#22C55E] font-bold hover:bg-[#16a34a]">
-            <Link href="/contact">Jetzt Anmelden</Link>
-          </Button>
         </div>
 
         <Sheet open={isOpen} onOpenChange={setIsOpen}>
@@ -75,13 +77,6 @@ export function Navbar() {
                   {link.label}
                 </Link>
               ))}
-              <div className="pt-4">
-                <Button asChild className="w-full min-h-[48px] bg-[#22C55E] font-bold hover:bg-[#16a34a]">
-                  <Link href="/contact" onClick={() => setIsOpen(false)}>
-                    Jetzt Anmelden
-                  </Link>
-                </Button>
-              </div>
             </div>
           </SheetContent>
         </Sheet>

@@ -14,7 +14,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: "Kabashi-Stöckler Fussballschule | Performance Bootcamp Oberösterreich",
-  description: "Professionelles Fußballcamp in Kirchdorf an der Krems. Technik, Koordination und Power Training für Kinder und Jugendliche von 6-16 Jahren. Jetzt anmelden!",
+  description: "Professionelles Fußballcamp in Kirchdorf an der Krems. Technik, Koordination und Power Training für Kinder und Jugendliche von 6-16 Jahren.",
   keywords: "Fußballcamp Oberösterreich, Fussballschule Kirchdorf, Jugendtraining Fußball, Fußballschule Österreich, Performance Bootcamp",
   authors: [{ name: "Kabashi-Stöckler Fussballschule" }],
   metadataBase: new URL("https://www.ks-fussballschule.at"),
