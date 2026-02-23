@@ -1,10 +1,10 @@
 import Image from "next/image";
-import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Award, Users, Heart, ArrowRight } from "lucide-react";
 import { getCoachesContent, getStoryContent } from "@/lib/content";
+import { CoachCard } from "@/components/CoachCard";
 
 export const metadata = {
   title: "Über Uns | Kabashi-Stöckler Fussballschule",
@@ -36,29 +36,14 @@ export default async function AboutPage() {
 
           <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2">
             {coaches.map((coach, index) => (
-              <Card key={index} className="overflow-hidden border-0 shadow-lg">
-                <div className="relative h-80">
-                  <Image
-                    src={coach.photoUrl}
-                    alt={`${coach.name} - Trainer`}
-                    fill
-                    className="object-cover object-top"
-                  />
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="mb-1 text-2xl font-black text-[#003399]">{coach.name}</h3>
-                  <p className="mb-4 font-semibold text-[#22C55E]">{coach.role}</p>
-                  {coach.bioExtended ? (
-                    <div className="space-y-3 text-gray-600">
-                      {coach.bioExtended.map((paragraph, i) => (
-                        <p key={i}>{paragraph}</p>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-600">{coach.bio}</p>
-                  )}
-                </CardContent>
-              </Card>
+              <CoachCard
+                key={index}
+                name={coach.name}
+                role={coach.role}
+                bio={coach.bio}
+                bioExtended={coach.bioExtended}
+                photoUrl={coach.photoUrl}
+              />
             ))}
           </div>
 
