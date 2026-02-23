@@ -34,7 +34,7 @@ export default async function AboutPage() {
         <div className="container mx-auto px-4">
           <h2 className="mb-12 text-center text-3xl font-black text-[#003399]">UNSERE TRAINER</h2>
 
-          <div className="mx-auto grid max-w-4xl gap-8 md:grid-cols-2">
+          <div className="mx-auto grid max-w-5xl gap-12 lg:grid-cols-2">
             {coaches.map((coach, index) => (
               <Card key={index} className="overflow-hidden border-0 shadow-lg">
                 <div className="relative h-80">
@@ -48,7 +48,15 @@ export default async function AboutPage() {
                 <CardContent className="p-6">
                   <h3 className="mb-1 text-2xl font-black text-[#003399]">{coach.name}</h3>
                   <p className="mb-4 font-semibold text-[#22C55E]">{coach.role}</p>
-                  <p className="text-gray-600">{coach.bio}</p>
+                  {coach.bioExtended ? (
+                    <div className="space-y-3 text-gray-600">
+                      {coach.bioExtended.map((paragraph, i) => (
+                        <p key={i}>{paragraph}</p>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="text-gray-600">{coach.bio}</p>
+                  )}
                 </CardContent>
               </Card>
             ))}

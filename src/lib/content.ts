@@ -28,6 +28,7 @@ export interface CoachContent {
   name: string;
   role: string;
   bio: string;
+  bioExtended?: string[];
   photoUrl: string;
 }
 
@@ -125,16 +126,26 @@ export const defaults = {
 
   coaches: [
     {
-      name: "ALBERT KABASHI",
-      role: "Co-Founder & Cheftrainer",
-      bio: "Mit jahrelanger Erfahrung im Fußball bringt Albert technisches Know-how und echte Leidenschaft für die Entwicklung junger Spieler mit. Sein Fokus liegt auf der individuellen Förderung und dem Aufbau von Selbstvertrauen bei jedem Kind.",
-      photoUrl: "/images/trainer-albert.jpg",
-    },
-    {
       name: "JONAS STÖCKLER",
       role: "Co-Founder & Trainer",
-      bio: "Jonas kombiniert moderne Trainingsmethoden mit traditionellem Fußball-Know-how. Seine Stärke liegt in der Koordinations- und Athletikschulung sowie der Vermittlung von Spielintelligenz auf spielerische Art und Weise.",
+      bio: "Jonas Stöckler begann seine fußballerische Laufbahn bereits im Alter von sechs Jahren bei Grün-Weiß Micheldorf. Dort durchlief er alle Nachwuchsstationen und schaffte schließlich den Sprung in die Kampfmannschaft der OÖ-Liga.",
+      bioExtended: [
+        "Jonas Stöckler begann seine fußballerische Laufbahn bereits im Alter von sechs Jahren bei Grün-Weiß Micheldorf. Dort durchlief er alle Nachwuchsstationen und schaffte schließlich den Sprung in die Kampfmannschaft der OÖ-Liga. In dieser Zeit absolvierte er zahlreiche Einsätze und erzielte zwei Tore. Neben seiner Zeit in Micheldorf sammelte er auch wertvolle Erfahrungen in Wien, wo er sechs Monate lang beim Regionalligisten Wiener Viktoria unter der Leitung von Toni Polster mittrainierte.",
+        "Nach dieser intensiven Phase folgte der Wechsel in die Landesliga Wien zur Sportunion Schönbrunn. Zwei Jahre später kehrte er zurück nach Oberösterreich zur Union Pettenbach, ebenfalls ein Verein der Landesliga. Aufgrund wiederkehrender und hartnäckiger Verletzungen ließ die Motivation und der Antrieb für den leistungsorientierten Fußball jedoch zunehmend nach.",
+        "Parallel zu seiner sportlichen Laufbahn ist Jonas heute als Lehrperson an der Mittelschule in Kirchdorf tätig.",
+      ],
       photoUrl: "/images/trainer-jonas.jpg",
+    },
+    {
+      name: "ALBERT KABASHI",
+      role: "Co-Founder & Cheftrainer | UEFA A-Lizenz",
+      bio: "Mit einer beeindruckenden Karriere als Nachwuchsspieler bei Dinamo Zagreb und jahrzehntelanger Erfahrung als Trainer gehört Albert Kabashi zu den Erfolgreichsten in Oberösterreich.",
+      bioExtended: [
+        "Mit einer beeindruckenden Karriere als Nachwuchsspieler bei Dinamo Zagreb (Junioren), Trešnjevka Zagreb, sowie bei verschiedenen Vereinen in Österreich wie Steyr, Micheldorf, Lenzing, Gmunden und Vöcklabruck bringt Albert Kabashi jahrzehntelange Fußballerfahrung mit auf den Platz.",
+        "Auch als Trainer gehört er zu den Erfolgreichsten in Oberösterreich: Mit Stationen u.a. beim SV Gmunden, Vöcklabruck, Micheldorf, Stadl-Paura und Molln konnte er gleich 4 Meistertitel feiern, wurde 3x Herbstmeister in der OÖ Liga mit Gmunden, 1x mit Stadlpaura und von der Krone zum Trainer des Jahres gewählt. Mit der UEFA A-Lizenz ausgestattet, bringt er höchste fachliche Kompetenz mit.",
+        "Neben dem Fußball ist er seit über 20 Jahren als Sozialpädagoge beim Land OÖ tätig – eine Kombination aus Herz, Erfahrung und Know-how, die ihn zu einem spitzen Coach machen.",
+      ],
+      photoUrl: "/images/trainer-albert.jpg",
     },
   ] as CoachContent[],
 
